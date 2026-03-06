@@ -269,7 +269,9 @@ func (f *FeishuChannel) handleWebhook(w http.ResponseWriter, r *http.Request) {
 	// URL verification challenge
 	if event.Challenge != "" {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"challenge": event.Challenge})
+		if err := json.NewEncoder(w).Encode(map[string]string{"challenge": event.Challenge}); err != nil {
+			slog.Warn("feishu challenge encode error", "err", err)
+		}
 		return
 	}
 

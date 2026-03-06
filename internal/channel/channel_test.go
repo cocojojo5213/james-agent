@@ -791,7 +791,7 @@ func TestTelegramChannel_Start_Success(t *testing.T) {
 	}
 
 	// Test stop
-	ch.Stop()
+	_ = ch.Stop()
 	if !mockBot.stopped {
 		t.Error("bot should be stopped")
 	}
@@ -825,7 +825,9 @@ func TestTelegramChannel_Start_NilMessage(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	ch.Start(ctx)
+	if err := ch.Start(ctx); err != nil {
+		t.Fatal(err)
+	}
 
 	// Send update with nil message (should be ignored)
 	mockBot.updatesChan <- tgbotapi.Update{Message: nil}

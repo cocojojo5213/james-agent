@@ -39,7 +39,7 @@ func TestWriteIfNotExists_ExistingFile(t *testing.T) {
 	path := filepath.Join(tmpDir, "test.txt")
 
 	// Create existing file
-	os.WriteFile(path, []byte("original"), 0644)
+	_ = os.WriteFile(path, []byte("original"), 0644)
 
 	writeIfNotExists(path, "new content")
 
@@ -104,8 +104,8 @@ func TestBuildSystemPrompt(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	// Create workspace files
-	os.WriteFile(filepath.Join(tmpDir, "AGENTS.md"), []byte("# Agent\nYou help."), 0644)
-	os.WriteFile(filepath.Join(tmpDir, "SOUL.md"), []byte("# Soul\nBe nice."), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "AGENTS.md"), []byte("# Agent\nYou help."), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "SOUL.md"), []byte("# Soul\nBe nice."), 0644)
 
 	cfg := &config.Config{
 		Agent: config.AgentConfig{
@@ -135,7 +135,9 @@ func TestBuildSystemPrompt_WithMemory(t *testing.T) {
 	}
 
 	mem := memory.NewMemoryStore(tmpDir)
-	mem.WriteLongTerm("Important info")
+	if err := mem.WriteLongTerm("Important info"); err != nil {
+		t.Fatal(err)
+	}
 
 	prompt := shared.BuildSystemPrompt(cfg.Agent.Workspace, mem)
 
@@ -195,7 +197,7 @@ func TestRunOnboard(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	output := buf.String()
 
 	if err != nil {
@@ -232,8 +234,8 @@ func TestRunOnboard_AlreadyExists(t *testing.T) {
 
 	// Create existing config
 	cfgDir := filepath.Join(tmpDir, ".james-agent")
-	os.MkdirAll(cfgDir, 0755)
-	os.WriteFile(filepath.Join(cfgDir, "config.json"), []byte("{}"), 0644)
+	_ = os.MkdirAll(cfgDir, 0755)
+	_ = os.WriteFile(filepath.Join(cfgDir, "config.json"), []byte("{}"), 0644)
 
 	// Clear API key env vars
 	t.Setenv("JAMES_API_KEY", "")
@@ -252,7 +254,7 @@ func TestRunOnboard_AlreadyExists(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	output := buf.String()
 
 	if err != nil {
@@ -288,7 +290,7 @@ func TestRunStatus(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	output := buf.String()
 
 	if err != nil {
@@ -339,7 +341,7 @@ func TestRunStatus_WithAPIKey(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	output := buf.String()
 
 	if err != nil {
@@ -375,7 +377,7 @@ func TestRunStatus_WithShortAPIKey(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	output := buf.String()
 
 	if err != nil {
@@ -396,8 +398,8 @@ func TestRunStatus_WithWorkspace(t *testing.T) {
 
 	// Create workspace with memory
 	wsDir := filepath.Join(tmpDir, ".james-agent", "workspace", "memory")
-	os.MkdirAll(wsDir, 0755)
-	os.WriteFile(filepath.Join(wsDir, "MEMORY.md"), []byte("test memory content"), 0644)
+	_ = os.MkdirAll(wsDir, 0755)
+	_ = os.WriteFile(filepath.Join(wsDir, "MEMORY.md"), []byte("test memory content"), 0644)
 
 	// Clear API key env vars
 	t.Setenv("JAMES_API_KEY", "")
@@ -416,7 +418,7 @@ func TestRunStatus_WithWorkspace(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	output := buf.String()
 
 	if err != nil {
@@ -437,8 +439,8 @@ func TestRunStatus_WorkspaceNotFound(t *testing.T) {
 
 	// Create config with non-existent workspace
 	cfgDir := filepath.Join(tmpDir, ".james-agent")
-	os.MkdirAll(cfgDir, 0755)
-	os.WriteFile(filepath.Join(cfgDir, "config.json"), []byte(`{"agent":{"workspace":"/nonexistent"}}`), 0644)
+	_ = os.MkdirAll(cfgDir, 0755)
+	_ = os.WriteFile(filepath.Join(cfgDir, "config.json"), []byte(`{"agent":{"workspace":"/nonexistent"}}`), 0644)
 
 	// Clear API key env vars
 	t.Setenv("JAMES_API_KEY", "")
@@ -457,7 +459,7 @@ func TestRunStatus_WorkspaceNotFound(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	output := buf.String()
 
 	if err != nil {
@@ -930,8 +932,8 @@ func TestRunStatus_EmptyMemory(t *testing.T) {
 
 	// Create workspace with empty memory
 	wsDir := filepath.Join(tmpDir, ".james-agent", "workspace", "memory")
-	os.MkdirAll(wsDir, 0755)
-	os.WriteFile(filepath.Join(wsDir, "MEMORY.md"), []byte(""), 0644)
+	_ = os.MkdirAll(wsDir, 0755)
+	_ = os.WriteFile(filepath.Join(wsDir, "MEMORY.md"), []byte(""), 0644)
 
 	// Clear API key env vars
 	t.Setenv("JAMES_API_KEY", "")
@@ -950,7 +952,7 @@ func TestRunStatus_EmptyMemory(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	output := buf.String()
 
 	if err != nil {

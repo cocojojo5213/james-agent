@@ -84,7 +84,7 @@ func TestLoadConfig_FromFile(t *testing.T) {
 
 	// Create config file
 	cfgDir := filepath.Join(tmpDir, ".james-agent")
-	os.MkdirAll(cfgDir, 0755)
+	_ = os.MkdirAll(cfgDir, 0755)
 
 	testCfg := map[string]any{
 		"agent": map[string]any{
@@ -96,7 +96,7 @@ func TestLoadConfig_FromFile(t *testing.T) {
 		},
 	}
 	data, _ := json.MarshalIndent(testCfg, "", "  ")
-	os.WriteFile(filepath.Join(cfgDir, "config.json"), data, 0644)
+	_ = os.WriteFile(filepath.Join(cfgDir, "config.json"), data, 0644)
 
 	cfg, err := LoadConfig()
 	if err != nil {
@@ -221,8 +221,8 @@ func TestLoadConfig_InvalidJSON(t *testing.T) {
 	defer os.Setenv("HOME", origHome)
 
 	cfgDir := filepath.Join(tmpDir, ".james-agent")
-	os.MkdirAll(cfgDir, 0755)
-	os.WriteFile(filepath.Join(cfgDir, "config.json"), []byte("invalid json"), 0644)
+	_ = os.MkdirAll(cfgDir, 0755)
+	_ = os.WriteFile(filepath.Join(cfgDir, "config.json"), []byte("invalid json"), 0644)
 
 	_, err := LoadConfig()
 	if err == nil {
@@ -237,7 +237,7 @@ func TestLoadConfig_EmptyWorkspace(t *testing.T) {
 	defer os.Setenv("HOME", origHome)
 
 	cfgDir := filepath.Join(tmpDir, ".james-agent")
-	os.MkdirAll(cfgDir, 0755)
+	_ = os.MkdirAll(cfgDir, 0755)
 
 	// Config with empty workspace - should use default
 	testCfg := map[string]any{
@@ -246,7 +246,7 @@ func TestLoadConfig_EmptyWorkspace(t *testing.T) {
 		},
 	}
 	data, _ := json.MarshalIndent(testCfg, "", "  ")
-	os.WriteFile(filepath.Join(cfgDir, "config.json"), data, 0644)
+	_ = os.WriteFile(filepath.Join(cfgDir, "config.json"), data, 0644)
 
 	cfg, err := LoadConfig()
 	if err != nil {

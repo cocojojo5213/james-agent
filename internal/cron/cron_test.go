@@ -134,14 +134,20 @@ func TestService_Persistence(t *testing.T) {
 
 	// Add jobs with first service
 	s1 := NewService(storePath)
-	s1.AddJob("persist1", Schedule{Kind: "every", EveryMs: 1000}, Payload{Message: "p1"})
-	s1.AddJob("persist2", Schedule{Kind: "every", EveryMs: 2000}, Payload{Message: "p2"})
+	if _, err := s1.AddJob("persist1", Schedule{Kind: "every", EveryMs: 1000}, Payload{Message: "p1"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s1.AddJob("persist2", Schedule{Kind: "every", EveryMs: 2000}, Payload{Message: "p2"}); err != nil {
+		t.Fatal(err)
+	}
 
 	// Load with second service
 	s2 := NewService(storePath)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	s2.Start(ctx)
+	if err := s2.Start(ctx); err != nil {
+		t.Fatal(err)
+	}
 
 	jobs := s2.ListJobs()
 	if len(jobs) != 2 {
@@ -252,7 +258,9 @@ func TestService_TickLoop_EverySchedule(t *testing.T) {
 	s.jobs = append(s.jobs, job)
 
 	ctx, cancel := context.WithCancel(context.Background())
-	s.Start(ctx)
+	if err := s.Start(ctx); err != nil {
+		t.Fatal(err)
+	}
 
 	// Wait for tickLoop to execute the job
 	time.Sleep(1500 * time.Millisecond)
@@ -280,7 +288,9 @@ func TestService_TickLoop_AtSchedule(t *testing.T) {
 	s.jobs = append(s.jobs, job)
 
 	ctx, cancel := context.WithCancel(context.Background())
-	s.Start(ctx)
+	if err := s.Start(ctx); err != nil {
+		t.Fatal(err)
+	}
 
 	// Wait for tickLoop
 	time.Sleep(1500 * time.Millisecond)
@@ -299,7 +309,9 @@ func TestService_RegisterCronJob(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	s.Start(ctx)
+	if err := s.Start(ctx); err != nil {
+		t.Fatal(err)
+	}
 
 	// Add a cron job - should be registered with the cron scheduler
 	_, err := s.AddJob("cron-job", Schedule{Kind: "cron", Expr: "*/1 * * * * *"}, Payload{Message: "cron"})
@@ -329,7 +341,9 @@ func TestService_CronJobWithInvalidExpr(t *testing.T) {
 		Payload:  Payload{Message: "x"},
 	}}
 	data, _ := json.MarshalIndent(jobs, "", "  ")
-	os.WriteFile(storePath, data, 0644)
+	if err := os.WriteFile(storePath, data, 0644); err != nil {
+		t.Fatal(err)
+	}
 
 	s := NewService(storePath)
 	ctx, cancel := context.WithCancel(context.Background())
@@ -357,7 +371,9 @@ func TestService_RegisterCronJob_Success(t *testing.T) {
 		Payload:  Payload{Message: "hourly"},
 	}}
 	data, _ := json.MarshalIndent(jobs, "", "  ")
-	os.WriteFile(storePath, data, 0644)
+	if err := os.WriteFile(storePath, data, 0644); err != nil {
+		t.Fatal(err)
+	}
 
 	s := NewService(storePath)
 	s.OnJob = func(job CronJob) (string, error) {
@@ -386,7 +402,9 @@ func TestService_RemoveJob_WithCron(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	s.Start(ctx)
+	if err := s.Start(ctx); err != nil {
+		t.Fatal(err)
+	}
 
 	// Add a cron job
 	job, _ := s.AddJob("remove-cron", Schedule{Kind: "cron", Expr: "0 0 * * * *"}, Payload{Message: "x"})

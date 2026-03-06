@@ -47,7 +47,9 @@ func TestTick_NoFile(t *testing.T) {
 
 func TestTick_EmptyFile(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte(""), 0644)
+	if err := os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte(""), 0644); err != nil {
+		t.Fatal(err)
+	}
 
 	var called atomic.Int32
 	s := New(tmpDir, func(prompt string) (string, error) {
@@ -64,7 +66,7 @@ func TestTick_EmptyFile(t *testing.T) {
 
 func TestTick_WithContent(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("Check tasks"), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("Check tasks"), 0644)
 
 	var receivedPrompt string
 	s := New(tmpDir, func(prompt string) (string, error) {
@@ -110,7 +112,7 @@ func TestStart_TickerFires(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	// Create HEARTBEAT.md
-	os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("tick"), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("tick"), 0644)
 
 	tickCount := 0
 	s := New(tmpDir, func(prompt string) (string, error) {
@@ -138,7 +140,7 @@ func TestStart_TickerFires(t *testing.T) {
 
 func TestTick_HandlerError(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("Check tasks"), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("Check tasks"), 0644)
 
 	s := New(tmpDir, func(prompt string) (string, error) {
 		return "", fmt.Errorf("handler error")
@@ -150,7 +152,7 @@ func TestTick_HandlerError(t *testing.T) {
 
 func TestTick_HeartbeatOK(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("Check tasks"), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("Check tasks"), 0644)
 
 	var called bool
 	s := New(tmpDir, func(prompt string) (string, error) {
@@ -167,7 +169,7 @@ func TestTick_HeartbeatOK(t *testing.T) {
 
 func TestTick_NoHandler(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("Check tasks"), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "HEARTBEAT.md"), []byte("Check tasks"), 0644)
 
 	s := New(tmpDir, nil, time.Second)
 

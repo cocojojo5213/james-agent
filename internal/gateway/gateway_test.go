@@ -100,8 +100,8 @@ func TestTruncate(t *testing.T) {
 func TestBuildSystemPrompt(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	os.WriteFile(filepath.Join(tmpDir, "AGENTS.md"), []byte("# Agent\nYou are helpful."), 0644)
-	os.WriteFile(filepath.Join(tmpDir, "SOUL.md"), []byte("# Soul\nBe kind."), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "AGENTS.md"), []byte("# Agent\nYou are helpful."), 0644)
+	_ = os.WriteFile(filepath.Join(tmpDir, "SOUL.md"), []byte("# Soul\nBe kind."), 0644)
 
 	mem := memory.NewMemoryStore(tmpDir)
 	prompt := shared.BuildSystemPrompt(tmpDir, mem)
@@ -121,7 +121,9 @@ func TestBuildSystemPrompt_WithMemory(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	mem := memory.NewMemoryStore(tmpDir)
-	mem.WriteLongTerm("User is a developer.")
+	if err := mem.WriteLongTerm("User is a developer."); err != nil {
+		t.Fatal(err)
+	}
 
 	prompt := shared.BuildSystemPrompt(tmpDir, mem)
 
@@ -249,7 +251,7 @@ func TestGateway_ProcessLoop(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	go g.processLoop(ctx)
+	go func() { _ = g.processLoop(ctx) }()
 
 	// Send inbound message
 	msgBus.Inbound <- bus.InboundMessage{
@@ -304,7 +306,7 @@ func TestGateway_ProcessLoop_WithContentBlocks(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	go g.processLoop(ctx)
+	go func() { _ = g.processLoop(ctx) }()
 
 	msgBus.Inbound <- bus.InboundMessage{
 		Channel:       "test",
@@ -399,7 +401,7 @@ func TestGateway_ProcessLoop_AgentError(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	go g.processLoop(ctx)
+	go func() { _ = g.processLoop(ctx) }()
 
 	msgBus.Inbound <- bus.InboundMessage{
 		Channel:  "test",
@@ -440,7 +442,7 @@ func TestGateway_ProcessLoop_EmptyResult(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	go g.processLoop(ctx)
+	go func() { _ = g.processLoop(ctx) }()
 
 	msgBus.Inbound <- bus.InboundMessage{
 		Channel:  "test",
@@ -576,7 +578,7 @@ func TestNewWithOptions_MockRuntime(t *testing.T) {
 	}
 
 	// Clean up
-	g.Shutdown()
+	_ = g.Shutdown()
 }
 
 func TestNewWithOptions_RuntimeFactoryError(t *testing.T) {
@@ -745,7 +747,7 @@ func TestGateway_CronOnJob(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewWithOptions error: %v", err)
 	}
-	defer g.Shutdown()
+	defer func() { _ = g.Shutdown() }()
 
 	// Test cron OnJob callback
 	job := cron.CronJob{
@@ -787,7 +789,7 @@ func TestGateway_CronOnJob_WithDelivery(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewWithOptions error: %v", err)
 	}
-	defer g.Shutdown()
+	defer func() { _ = g.Shutdown() }()
 
 	// Test cron OnJob with delivery
 	job := cron.CronJob{
@@ -851,7 +853,7 @@ func TestGateway_CronOnJob_Error(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewWithOptions error: %v", err)
 	}
-	defer g.Shutdown()
+	defer func() { _ = g.Shutdown() }()
 
 	// Test cron OnJob with error
 	job := cron.CronJob{
