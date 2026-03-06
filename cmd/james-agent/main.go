@@ -194,16 +194,16 @@ func runAgentWithOptions(opts AgentOptions) error {
 			return fmt.Errorf("agent error: %w", err)
 		}
 		if resp != nil && resp.Result != nil {
-			fmt.Fprintln(stdout, resp.Result.Output)
+			_, _ = fmt.Fprintln(stdout, resp.Result.Output)
 		}
 		return nil
 	}
 
 	// REPL mode
-	fmt.Fprintln(stdout, "james-agent (type 'exit' to quit)")
+	_, _ = fmt.Fprintln(stdout, "james-agent (type 'exit' to quit)")
 	scanner := bufio.NewScanner(stdin)
 	for {
-		fmt.Fprint(stdout, "\n> ")
+		_, _ = fmt.Fprint(stdout, "\n> ")
 		if !scanner.Scan() {
 			break
 		}
@@ -220,11 +220,11 @@ func runAgentWithOptions(opts AgentOptions) error {
 			SessionID: "cli-repl",
 		})
 		if err != nil {
-			fmt.Fprintf(stderr, "Error: %v\n", err)
+			_, _ = fmt.Fprintf(stderr, "Error: %v\n", err)
 			continue
 		}
 		if resp != nil && resp.Result != nil {
-			fmt.Fprintln(stdout, resp.Result.Output)
+			_, _ = fmt.Fprintln(stdout, resp.Result.Output)
 		}
 	}
 	return nil
@@ -286,13 +286,13 @@ func runOnboard(cmd *cobra.Command, args []string) error {
 	writeIfNotExists(filepath.Join(ws, "memory", "MEMORY.md"), "")
 	writeIfNotExists(filepath.Join(ws, "HEARTBEAT.md"), "")
 
-	fmt.Printf("Workspace ready: %s\n", ws)
-	fmt.Printf("Skills dir: %s\n", resolveSkillsDir(cfg))
-	fmt.Println("\nNext steps:")
-	fmt.Printf("  1. Edit %s to set your API key\n", cfgPath)
-	fmt.Println("  2. Or set JAMES_API_KEY environment variable")
-	fmt.Printf("  3. Add skills under %s (optional)\n", resolveSkillsDir(cfg))
-	fmt.Println("  4. Run 'james-agent agent -m \"Hello\"' to test")
+	_, _ = fmt.Printf("Workspace ready: %s\n", ws)
+	_, _ = fmt.Printf("Skills dir: %s\n", resolveSkillsDir(cfg))
+	_, _ = fmt.Println("\nNext steps:")
+	_, _ = fmt.Printf("  1. Edit %s to set your API key\n", cfgPath)
+	_, _ = fmt.Println("  2. Or set JAMES_API_KEY environment variable")
+	_, _ = fmt.Printf("  3. Add skills under %s (optional)\n", resolveSkillsDir(cfg))
+	_, _ = fmt.Println("  4. Run 'james-agent agent -m \"Hello\"' to test")
 
 	return nil
 }
@@ -304,10 +304,10 @@ func runStatus(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	fmt.Printf("Config: %s\n", config.ConfigPath())
-	fmt.Printf("Workspace: %s\n", cfg.Agent.Workspace)
-	fmt.Printf("Model: %s\n", cfg.Agent.Model)
-	fmt.Printf("Provider: %s\n", providerDisplay(cfg.Provider.Type))
+	_, _ = fmt.Printf("Config: %s\n", config.ConfigPath())
+	_, _ = fmt.Printf("Workspace: %s\n", cfg.Agent.Workspace)
+	_, _ = fmt.Printf("Model: %s\n", cfg.Agent.Model)
+	_, _ = fmt.Printf("Provider: %s\n", providerDisplay(cfg.Provider.Type))
 	if cfg.Provider.APIKey != "" && len(cfg.Provider.APIKey) > 8 {
 		masked := cfg.Provider.APIKey[:4] + "..." + cfg.Provider.APIKey[len(cfg.Provider.APIKey)-4:]
 		fmt.Printf("API Key: %s\n", masked)
@@ -316,10 +316,10 @@ func runStatus(cmd *cobra.Command, args []string) error {
 	} else {
 		fmt.Println("API Key: not set")
 	}
-	fmt.Printf("Telegram: enabled=%v\n", cfg.Channels.Telegram.Enabled)
-	fmt.Printf("Feishu: enabled=%v\n", cfg.Channels.Feishu.Enabled)
-	fmt.Printf("WeCom: enabled=%v\n", cfg.Channels.WeCom.Enabled)
-	fmt.Printf("Skills: enabled=%v dir=%s\n", cfg.Skills.Enabled, resolveSkillsDir(cfg))
+	_, _ = fmt.Printf("Telegram: enabled=%v\n", cfg.Channels.Telegram.Enabled)
+	_, _ = fmt.Printf("Feishu: enabled=%v\n", cfg.Channels.Feishu.Enabled)
+	_, _ = fmt.Printf("WeCom: enabled=%v\n", cfg.Channels.WeCom.Enabled)
+	_, _ = fmt.Printf("Skills: enabled=%v dir=%s\n", cfg.Skills.Enabled, resolveSkillsDir(cfg))
 
 	if _, err := os.Stat(cfg.Agent.Workspace); err != nil {
 		fmt.Println("Workspace: not found (run 'james-agent onboard')")
@@ -484,13 +484,13 @@ func runSkillsInfo(cmd *cobra.Command, args []string) error {
 		return printJSON(payload)
 	}
 
-	fmt.Printf("Name: %s\n", registration.Definition.Name)
+	_, _ = fmt.Printf("Name: %s\n", registration.Definition.Name)
 	desc := strings.TrimSpace(registration.Definition.Description)
 	if desc == "" {
 		desc = "(no description)"
 	}
-	fmt.Printf("Description: %s\n", desc)
-	fmt.Printf("Skills dir: %s\n", skillDir)
+	_, _ = fmt.Printf("Description: %s\n", desc)
+	_, _ = fmt.Printf("Skills dir: %s\n", skillDir)
 
 	if len(keywords) == 0 {
 		fmt.Println("Keywords: (none)")
@@ -602,12 +602,12 @@ func runSkillsCheck(cmd *cobra.Command, args []string) error {
 		})
 	}
 
-	fmt.Printf("Skill folders: %d\n", skillFolders)
-	fmt.Printf("Loaded skills: %d\n", len(registrations))
+	_, _ = fmt.Printf("Skill folders: %d\n", skillFolders)
+	_, _ = fmt.Printf("Loaded skills: %d\n", len(registrations))
 	if len(missingSkillFile) > 0 {
 		fmt.Printf("Missing SKILL.md: %s\n", strings.Join(missingSkillFile, ", "))
 	}
-	fmt.Println("Result: ok")
+	_, _ = fmt.Println("Result: ok")
 	return nil
 }
 
@@ -716,7 +716,7 @@ func printJSON(v any) error {
 	if err != nil {
 		return fmt.Errorf("marshal json: %w", err)
 	}
-	fmt.Println(string(data))
+	_, _ = fmt.Println(string(data))
 	return nil
 }
 

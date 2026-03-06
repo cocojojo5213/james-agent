@@ -45,7 +45,7 @@ func (j *Journal) Record(channel, senderID, prompt, result string) error {
 	if err != nil {
 		return fmt.Errorf("open journal file: %w", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	_, err = f.WriteString(entry)
 	return err

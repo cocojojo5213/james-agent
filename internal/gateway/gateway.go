@@ -460,7 +460,7 @@ func (g *Gateway) handleStreamCompletion(w http.ResponseWriter, r *http.Request,
 				},
 			}
 			data, _ := json.Marshal(chunk)
-			fmt.Fprintf(w, "data: %s\n\n", data)
+			_, _ = fmt.Fprintf(w, "data: %s\n\n", data)
 			flusher.Flush()
 		},
 		nil,
@@ -470,7 +470,7 @@ func (g *Gateway) handleStreamCompletion(w http.ResponseWriter, r *http.Request,
 		slog.Error("stream completion error", "error", err)
 	}
 
-	fmt.Fprintf(w, "data: [DONE]\n\n")
+	_, _ = fmt.Fprintf(w, "data: [DONE]\n\n")
 	flusher.Flush()
 }
 

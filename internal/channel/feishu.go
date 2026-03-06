@@ -72,7 +72,7 @@ func (c *defaultFeishuClient) GetTenantAccessToken(ctx context.Context) (string,
 	if err != nil {
 		return "", fmt.Errorf("get tenant token: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		Code              int    `json:"code"`
@@ -127,7 +127,7 @@ func (c *defaultFeishuClient) SendMessage(ctx context.Context, chatID, content s
 	if err != nil {
 		return fmt.Errorf("send feishu message: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		Code int    `json:"code"`
@@ -416,7 +416,7 @@ func downloadFeishuImageAsBase64(ctx context.Context, tenantAccessToken, imageKe
 	if err != nil {
 		return "", "", fmt.Errorf("request image: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := io.ReadAll(io.LimitReader(resp.Body, feishuInboundImageMaxBytes+1))
 	if err != nil {

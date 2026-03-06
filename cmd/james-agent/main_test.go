@@ -193,7 +193,7 @@ func TestRunOnboard(t *testing.T) {
 
 	err := runOnboard(&cobra.Command{}, []string{})
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
@@ -250,7 +250,7 @@ func TestRunOnboard_AlreadyExists(t *testing.T) {
 
 	err := runOnboard(&cobra.Command{}, []string{})
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
@@ -286,7 +286,7 @@ func TestRunStatus(t *testing.T) {
 
 	err := runStatus(&cobra.Command{}, []string{})
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
@@ -337,7 +337,7 @@ func TestRunStatus_WithAPIKey(t *testing.T) {
 
 	err := runStatus(&cobra.Command{}, []string{})
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
@@ -373,7 +373,7 @@ func TestRunStatus_WithShortAPIKey(t *testing.T) {
 
 	err := runStatus(&cobra.Command{}, []string{})
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
@@ -414,7 +414,7 @@ func TestRunStatus_WithWorkspace(t *testing.T) {
 
 	err := runStatus(&cobra.Command{}, []string{})
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
@@ -455,7 +455,7 @@ func TestRunStatus_WorkspaceNotFound(t *testing.T) {
 
 	err := runStatus(&cobra.Command{}, []string{})
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
@@ -948,7 +948,7 @@ func TestRunStatus_EmptyMemory(t *testing.T) {
 
 	err := runStatus(&cobra.Command{}, []string{})
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
