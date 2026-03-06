@@ -480,7 +480,7 @@ func TestGateway_ProcessLoop_ContextCancelled(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		g.processLoop(ctx)
+		_ = g.processLoop(ctx)
 		close(done)
 	}()
 

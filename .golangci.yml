@@ -6,6 +6,29 @@ linters:
     errcheck:
       check-type-assertions: false
       check-blank: false
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Print
+        - fmt.Printf
+        - fmt.Println
+        - (io.Closer).Close
+        - (*os.File).Close
+        - (net/http.ResponseWriter).Write
+        - io.Copy
+        - io.WriteString
+        - os.Setenv
+        - (*strings.Builder).WriteString
+        - (*strings.Builder).Write
+  exclusions:
+    presets:
+      - std-error-handling
+      - common-false-positives
+    rules:
+      - path: _test\.go
+        linters:
+          - errcheck
 
 run:
   timeout: 5m

@@ -27,5 +27,5 @@ func (r *RuntimeAdapter) RunStream(ctx context.Context, req api.Request) (<-chan
 }
 
 func (r *RuntimeAdapter) Close() {
-	r.RT.Close()
+	_ = r.RT.Close()
 }

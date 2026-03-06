@@ -204,7 +204,7 @@ func (f *FeishuChannel) Start(ctx context.Context) error {
 
 	go func() {
 		<-ctx.Done()
-		f.server.Close()
+		_ = f.server.Close()
 	}()
 
 	return nil
@@ -215,7 +215,7 @@ func (f *FeishuChannel) Stop() error {
 		f.cancel()
 	}
 	if f.server != nil {
-		f.server.Close()
+		_ = f.server.Close()
 	}
 	slog.Info("feishu stopped")
 	return nil

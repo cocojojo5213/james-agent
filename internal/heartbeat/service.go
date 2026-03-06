@@ -90,14 +90,14 @@ func (s *Service) buildEvolutionContext(heartbeatPrompt string) string {
 	var sb strings.Builder
 	sb.WriteString(heartbeatPrompt)
 	sb.WriteString("\n\n## Current State\n")
-	sb.WriteString(fmt.Sprintf("- Time: %s\n", time.Now().Format(time.RFC3339)))
+	_, _ = fmt.Fprintf(&sb, "- Time: %s\n", time.Now().Format(time.RFC3339))
 
 	// Memory summary
 	memPath := filepath.Join(s.workspace, "memory", "MEMORY.md")
 	if memData, err := os.ReadFile(memPath); err == nil {
 		memStr := strings.TrimSpace(string(memData))
 		if memStr != "" {
-			sb.WriteString(fmt.Sprintf("- Recent memory: %s\n", shared.Truncate(memStr, 300)))
+			_, _ = fmt.Fprintf(&sb, "- Recent memory: %s\n", shared.Truncate(memStr, 300))
 		}
 	}
 
@@ -110,7 +110,7 @@ func (s *Service) buildEvolutionContext(heartbeatPrompt string) string {
 			}
 		}
 		if len(skillNames) > 0 {
-			sb.WriteString(fmt.Sprintf("- Skills loaded: %s\n", strings.Join(skillNames, ", ")))
+			_, _ = fmt.Fprintf(&sb, "- Skills loaded: %s\n", strings.Join(skillNames, ", "))
 		}
 	}
 
@@ -120,7 +120,7 @@ func (s *Service) buildEvolutionContext(heartbeatPrompt string) string {
 	if jData, err := os.ReadFile(todayFile); err == nil {
 		jStr := strings.TrimSpace(string(jData))
 		if jStr != "" {
-			sb.WriteString(fmt.Sprintf("- Today's conversations: %s\n", shared.Truncate(jStr, 300)))
+			_, _ = fmt.Fprintf(&sb, "- Today's conversations: %s\n", shared.Truncate(jStr, 300))
 		}
 	}
 
