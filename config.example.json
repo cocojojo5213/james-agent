@@ -1,0 +1,60 @@
+{
+  "agent": {
+    "workspace": "~/.james-agent/workspace",
+    "model": "gpt-4o-mini",
+    "maxTokens": 8192,
+    "temperature": 0.7,
+    "maxToolIterations": 20
+  },
+  "provider": {
+    "type": "openai-compatible",
+    "apiKey": "sk-...",
+    "baseUrl": "https://your-proxy-host/v1"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": false,
+      "token": "",
+      "allowFrom": [],
+      "proxy": ""
+    },
+    "feishu": {
+      "enabled": false,
+      "appId": "",
+      "appSecret": "",
+      "verificationToken": "",
+      "encryptKey": "",
+      "port": 9876,
+      "allowFrom": []
+    },
+    "wecom": {
+      "enabled": false,
+      "token": "",
+      "encodingAESKey": "",
+      "receiveId": "",
+      "port": 9886,
+      "allowFrom": []
+    },
+    "whatsapp": {
+      "enabled": false,
+      "allowFrom": []
+    },
+    "webui": {
+      "enabled": false,
+      "allowFrom": []
+    }
+  },
+  "tools": {
+    "braveApiKey": "",
+    "execTimeout": 60,
+    "restrictToWorkspace": true
+  },
+  "skills": {
+    "enabled": true,
+    "dir": ""
+  },
+  "gateway": {
+    "host": "0.0.0.0",
+    "port": 18790
+  }
+}

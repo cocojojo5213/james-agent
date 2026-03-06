@@ -1,0 +1,39 @@
+services:
+  james-agent:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "18790:18790"
+      - "9876:9876"
+      - "9886:9886"
+    volumes:
+      - james-data:/root/.james-agent
+    environment:
+      - JAMES_PROVIDER=${JAMES_PROVIDER:-}
+      - JAMES_MODEL=${JAMES_MODEL:-}
+      - JAMES_API_KEY=${JAMES_API_KEY}
+      - JAMES_OPENAI_API_KEY=${JAMES_OPENAI_API_KEY:-}
+      - JAMES_TELEGRAM_TOKEN=${JAMES_TELEGRAM_TOKEN:-}
+      - JAMES_OPENAI_BASE_URL=${JAMES_OPENAI_BASE_URL:-}
+      - JAMES_FEISHU_APP_ID=${JAMES_FEISHU_APP_ID:-}
+      - JAMES_FEISHU_APP_SECRET=${JAMES_FEISHU_APP_SECRET:-}
+      - JAMES_WECOM_TOKEN=${JAMES_WECOM_TOKEN:-}
+      - JAMES_WECOM_ENCODING_AES_KEY=${JAMES_WECOM_ENCODING_AES_KEY:-}
+      - JAMES_WECOM_RECEIVE_ID=${JAMES_WECOM_RECEIVE_ID:-}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:18790/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Optional: expose webhook via cloudflared tunnel
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    profiles: ["tunnel"]
+    command: tunnel --url http://james-agent:9876
+    depends_on:
+      - james-agent
+
+volumes:
+  james-data:
