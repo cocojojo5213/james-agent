@@ -7,7 +7,7 @@ Personal AI assistant built with Go. Self-hosted, self-evolving, Telegram-first.
 ## Features
 
 - **Telegram Channel** - Primary interaction channel with streaming responses
-- **Multi-Provider** - Anthropic, OpenAI, and OpenAI-compatible APIs
+- **Multi-Provider** - Anthropic, OpenAI, and 15+ OpenAI-compatible providers (DeepSeek, Groq, xAI, Mistral, SiliconFlow, etc.)
 - **Streaming** - Real-time response streaming via Telegram `editMessageText`
 - **Memory** - Long-term (MEMORY.md) + daily memory persistence
 - **Heartbeat** - Periodic self-evolution tasks from HEARTBEAT.md
@@ -68,17 +68,61 @@ Run `make setup` for interactive config, or edit `~/.james-agent/config.json`:
 
 ### Provider Types
 
+**Official providers:**
+
 | Type | Config | Env Vars |
 |------|--------|----------|
 | anthropic (default) | `"type": "anthropic"` | `JAMES_API_KEY`, `ANTHROPIC_API_KEY` |
 | openai | `"type": "openai"` | `OPENAI_API_KEY` |
 | openai-compatible | `"type": "openai-compatible"` | `JAMES_API_KEY` + `JAMES_OPENAI_BASE_URL` |
 
+**Third-party providers (auto baseUrl, just set one env var):**
+
+| Type | Env Var | Default Model |
+|------|---------|---------------|
+| `deepseek` | `DEEPSEEK_API_KEY` | `deepseek-chat` |
+| `groq` | `GROQ_API_KEY` | `llama-3.3-70b-versatile` |
+| `xai` | `XAI_API_KEY` | `grok-2-latest` |
+| `together` | `TOGETHER_API_KEY` | `meta-llama/Llama-3.3-70B-Instruct-Turbo` |
+| `mistral` | `MISTRAL_API_KEY` | `mistral-large-latest` |
+| `moonshot` | `MOONSHOT_API_KEY` | `moonshot-v1-8k` |
+| `zhipu` | `ZHIPU_API_KEY` | `glm-4` |
+| `yi` | `YI_API_KEY` | `yi-large` |
+| `siliconflow` | `SILICONFLOW_API_KEY` | `deepseek-ai/DeepSeek-V3` |
+| `openrouter` | `OPENROUTER_API_KEY` | - |
+| `volcengine` | `VOLCENGINE_API_KEY` | - |
+| `baichuan` | `BAICHUAN_API_KEY` | `Baichuan4` |
+| `minimax` | `MINIMAX_API_KEY` | `abab6.5s-chat` |
+| `infini` | `INFINI_API_KEY` | - |
+| `ollama` | config only | `llama3` |
+
+**Usage - just one env var:**
+
+```bash
+# DeepSeek - that's it, no baseUrl needed
+export DEEPSEEK_API_KEY=sk-xxx
+export JAMES_TELEGRAM_TOKEN=your-bot-token
+make gateway
+```
+
+**Or in config.json:**
+
+```json
+{
+  "provider": {
+    "type": "deepseek",
+    "apiKey": "sk-xxx"
+  }
+}
+```
+
+You can still override `baseUrl` and `model` if needed - the preset only fills in defaults.
+
 ### Environment Variables
 
 | Variable | Description |
 |----------|-------------|
-| `JAMES_API_KEY` | API key (any provider) |
+| `JAMES_API_KEY` | API key (any provider, highest priority) |
 | `JAMES_TELEGRAM_TOKEN` | Telegram bot token |
 | `JAMES_MODEL` | Override model name |
 | `JAMES_BASE_URL` | Custom API base URL |

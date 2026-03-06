@@ -232,6 +232,39 @@ func LoadConfig() (*Config, error) {
 		}
 	}
 
+	// Third-party provider env vars: set one and everything auto-configures.
+	// Checked before official providers so JAMES_API_KEY can still override.
+	thirdPartyEnvKeys := []struct {
+		envVar       string
+		providerType string
+	}{
+		{"DEEPSEEK_API_KEY", "deepseek"},
+		{"GROQ_API_KEY", "groq"},
+		{"XAI_API_KEY", "xai"},
+		{"TOGETHER_API_KEY", "together"},
+		{"MISTRAL_API_KEY", "mistral"},
+		{"MOONSHOT_API_KEY", "moonshot"},
+		{"ZHIPU_API_KEY", "zhipu"},
+		{"YI_API_KEY", "yi"},
+		{"SILICONFLOW_API_KEY", "siliconflow"},
+		{"OPENROUTER_API_KEY", "openrouter"},
+		{"VOLCENGINE_API_KEY", "volcengine"},
+		{"BAICHUAN_API_KEY", "baichuan"},
+		{"MINIMAX_API_KEY", "minimax"},
+		{"INFINI_API_KEY", "infini"},
+	}
+	thirdPartyDetected := false
+	for _, tp := range thirdPartyEnvKeys {
+		if key := os.Getenv(tp.envVar); key != "" && cfg.Provider.APIKey == "" {
+			cfg.Provider.APIKey = key
+			if !providerTypePinned {
+				cfg.Provider.Type = tp.providerType
+			}
+			thirdPartyDetected = true
+			break
+		}
+	}
+
 	openAIKeySelected := false
 	if jamesAPIKeyEnv != "" {
 		cfg.Provider.APIKey = jamesAPIKeyEnv
@@ -257,13 +290,17 @@ func LoadConfig() (*Config, error) {
 	}
 	if jamesOpenAIBaseURLEnv != "" && cfg.Provider.BaseURL == "" {
 		cfg.Provider.BaseURL = jamesOpenAIBaseURLEnv
-		setOpenAICompatibleType()
+		if !thirdPartyDetected {
+			setOpenAICompatibleType()
+		}
 	}
 	if openAIBaseURLEnv != "" &&
 		cfg.Provider.BaseURL == "" &&
 		(openAIKeySelected || strings.EqualFold(cfg.Provider.Type, "openai") || strings.EqualFold(cfg.Provider.Type, "openai-compatible")) {
 		cfg.Provider.BaseURL = openAIBaseURLEnv
-		setOpenAICompatibleType()
+		if !thirdPartyDetected {
+			setOpenAICompatibleType()
+		}
 	}
 	if anthropicBaseURLEnv != "" && cfg.Provider.BaseURL == "" {
 		cfg.Provider.BaseURL = anthropicBaseURLEnv

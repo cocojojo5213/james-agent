@@ -437,3 +437,59 @@ func TestLoadConfig_MyclawModelEnv(t *testing.T) {
 		t.Errorf("model = %q, want grok-2-latest", cfg.Agent.Model)
 	}
 }
+
+func TestLoadConfig_ThirdPartyEnvAutoDetect(t *testing.T) {
+	tests := []struct {
+		envVar       string
+		envValue     string
+		wantType     string
+	}{
+		{"DEEPSEEK_API_KEY", "sk-deepseek-test", "deepseek"},
+		{"GROQ_API_KEY", "gsk_groq-test", "groq"},
+		{"XAI_API_KEY", "xai-test-key", "xai"},
+		{"MISTRAL_API_KEY", "mistral-test-key", "mistral"},
+		{"SILICONFLOW_API_KEY", "sf-test-key", "siliconflow"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.envVar, func(t *testing.T) {
+			tmpDir := t.TempDir()
+			origHome := os.Getenv("HOME")
+			t.Setenv("HOME", tmpDir)
+			defer os.Setenv("HOME", origHome)
+
+			t.Setenv("JAMES_API_KEY", "")
+			t.Setenv("ANTHROPIC_API_KEY", "")
+			t.Setenv("OPENAI_API_KEY", "")
+			t.Setenv(tt.envVar, tt.envValue)
+
+			cfg, err := LoadConfig()
+			if err != nil {
+				t.Fatalf("LoadConfig error: %v", err)
+			}
+			if cfg.Provider.APIKey != tt.envValue {
+				t.Errorf("apiKey = %q, want %q", cfg.Provider.APIKey, tt.envValue)
+			}
+			if cfg.Provider.Type != tt.wantType {
+				t.Errorf("provider type = %q, want %q", cfg.Provider.Type, tt.wantType)
+			}
+		})
+	}
+}
+
+func TestLoadConfig_JamesAPIKeyOverridesThirdParty(t *testing.T) {
+	tmpDir := t.TempDir()
+	origHome := os.Getenv("HOME")
+	t.Setenv("HOME", tmpDir)
+	defer os.Setenv("HOME", origHome)
+
+	t.Setenv("DEEPSEEK_API_KEY", "sk-deepseek")
+	t.Setenv("JAMES_API_KEY", "sk-james-override")
+
+	cfg, err := LoadConfig()
+	if err != nil {
+		t.Fatalf("LoadConfig error: %v", err)
+	}
+	if cfg.Provider.APIKey != "sk-james-override" {
+		t.Errorf("apiKey = %q, want sk-james-override (JAMES_API_KEY should take priority)", cfg.Provider.APIKey)
+	}
+}
