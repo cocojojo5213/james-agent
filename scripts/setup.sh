@@ -32,7 +32,7 @@ if [[ "$PROVIDER_TYPE" != "anthropic" && "$PROVIDER_TYPE" != "openai" && "$PROVI
     exit 1
 fi
 
-DEFAULT_MODEL="claude-sonnet-4-5-20250929"
+DEFAULT_MODEL="claude-sonnet-4-6"
 if [[ "$PROVIDER_TYPE" == "openai" || "$PROVIDER_TYPE" == "openai-compatible" ]]; then
     DEFAULT_MODEL="gpt-4o-mini"
 fi

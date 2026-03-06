@@ -25,7 +25,7 @@ type Preset struct {
 var KnownProviders = map[string]Preset{
 	"deepseek":    {BaseURL: "https://api.deepseek.com", DefaultModel: "deepseek-chat"},
 	"groq":        {BaseURL: "https://api.groq.com/openai/v1", DefaultModel: "llama-3.3-70b-versatile"},
-	"xai":         {BaseURL: "https://api.x.ai/v1", DefaultModel: "grok-2-latest"},
+	"xai":         {BaseURL: "https://api.x.ai/v1", DefaultModel: "grok-5"},
 	"together":    {BaseURL: "https://api.together.xyz/v1", DefaultModel: "meta-llama/Llama-3.3-70B-Instruct-Turbo"},
 	"mistral":     {BaseURL: "https://api.mistral.ai/v1", DefaultModel: "mistral-large-latest"},
 	"moonshot":    {BaseURL: "https://api.moonshot.cn/v1", DefaultModel: "moonshot-v1-8k"},

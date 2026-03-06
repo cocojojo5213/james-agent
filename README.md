@@ -50,7 +50,7 @@ Run `make setup` for interactive config, or edit `~/.james-agent/config.json`:
     "baseUrl": ""
   },
   "agent": {
-    "model": "claude-sonnet-4-5-20250929"
+    "model": "claude-sonnet-4-6"
   },
   "channels": {
     "telegram": {
@@ -82,7 +82,7 @@ Run `make setup` for interactive config, or edit `~/.james-agent/config.json`:
 |------|---------|---------------|
 | `deepseek` | `DEEPSEEK_API_KEY` | `deepseek-chat` |
 | `groq` | `GROQ_API_KEY` | `llama-3.3-70b-versatile` |
-| `xai` | `XAI_API_KEY` | `grok-2-latest` |
+| `xai` | `XAI_API_KEY` | `grok-5` |
 | `together` | `TOGETHER_API_KEY` | `meta-llama/Llama-3.3-70B-Instruct-Turbo` |
 | `mistral` | `MISTRAL_API_KEY` | `mistral-large-latest` |
 | `moonshot` | `MOONSHOT_API_KEY` | `moonshot-v1-8k` |

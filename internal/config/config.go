@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DefaultModel             = "claude-sonnet-4-5-20250929"
+	DefaultModel             = "claude-sonnet-4-6"
 	DefaultMaxTokens         = 8192
 	DefaultTemperature       = 0.7
 	DefaultMaxToolIterations = 20

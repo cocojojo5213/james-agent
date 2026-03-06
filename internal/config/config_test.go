@@ -88,7 +88,7 @@ func TestLoadConfig_FromFile(t *testing.T) {
 
 	testCfg := map[string]any{
 		"agent": map[string]any{
-			"model":     "claude-opus-4-20250514",
+			"model":     "claude-opus-4-6",
 			"maxTokens": 4096,
 		},
 		"provider": map[string]any{
@@ -102,8 +102,8 @@ func TestLoadConfig_FromFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("LoadConfig error: %v", err)
 	}
-	if cfg.Agent.Model != "claude-opus-4-20250514" {
-		t.Errorf("model = %q, want claude-opus-4-20250514", cfg.Agent.Model)
+	if cfg.Agent.Model != "claude-opus-4-6" {
+		t.Errorf("model = %q, want claude-opus-4-6", cfg.Agent.Model)
 	}
 	if cfg.Agent.MaxTokens != 4096 {
 		t.Errorf("maxTokens = %d, want 4096", cfg.Agent.MaxTokens)
@@ -427,14 +427,14 @@ func TestLoadConfig_MyclawModelEnv(t *testing.T) {
 	t.Setenv("HOME", tmpDir)
 	defer os.Setenv("HOME", origHome)
 
-	t.Setenv("JAMES_MODEL", "grok-2-latest")
+	t.Setenv("JAMES_MODEL", "grok-5")
 
 	cfg, err := LoadConfig()
 	if err != nil {
 		t.Fatalf("LoadConfig error: %v", err)
 	}
-	if cfg.Agent.Model != "grok-2-latest" {
-		t.Errorf("model = %q, want grok-2-latest", cfg.Agent.Model)
+	if cfg.Agent.Model != "grok-5" {
+		t.Errorf("model = %q, want grok-5", cfg.Agent.Model)
 	}
 }
 

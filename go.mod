@@ -1,6 +1,6 @@
 module github.com/cocojojo5213/james-agent
 
-go 1.24.0
+go 1.26.0
 
 require (
 	github.com/cexll/agentsdk-go v0.9.5
